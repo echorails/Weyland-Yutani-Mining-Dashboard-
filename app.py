@@ -11,6 +11,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, 
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
+import time
 
 st.set_page_config(
     page_title="Weyland Yutani Dashboard",
@@ -28,7 +29,11 @@ def load_data():
 
     url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={GID}"
 
-    response = requests.get(url, timeout=20)
+    response = requests.get(
+    url,
+    params={"refresh": int(time.time())},
+    headers={"Cache-Control": "no-cache"},
+    timeout=20)
     response.raise_for_status()
 
     df = pd.read_csv(StringIO(response.text))
